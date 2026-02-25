@@ -1,29 +1,33 @@
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import './assets/index.css'
 import Login from './components/Login.jsx'
 import FeedPublic from './components/FeedPublic.jsx'
 
-function App() {
-  const [currentPage, setCurrentPage] = useState('login');
+function AppContent() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   const handleLoginSuccess = (userData) => {
     setUser(userData);
-    setCurrentPage('feedpublic');
+    navigate(`/${userData.id}/feed`);
   };
 
-  if ( currentPage === 'login') {
-    return (
-      <Login onLoginSuccess={handleLoginSuccess}/>
-    )
-  }
-
-  if ( currentPage === 'feedpublic') {
-    return (
-      <FeedPublic user={user}/>
-    )
-  }
-
+  return (
+    <Routes>
+      <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />}/>
+      <Route path="/:userId/feed" element={user ? <FeedPublic user={user} /> : <Navigate to="/login" />} />
+      <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
+  )
 };
+
+function App() {
+  return (
+  <BrowserRouter>
+    <AppContent/>
+  </BrowserRouter>
+  )
+}
 
 export default App
