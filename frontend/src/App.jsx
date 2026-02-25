@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+import './assets/index.css'
 import Login from './components/Login.jsx'
 import FeedPublic from './components/FeedPublic.jsx'
 
