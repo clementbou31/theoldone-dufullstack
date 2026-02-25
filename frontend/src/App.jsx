@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Login from './components/Login.jsx'
-import FeedPublic from './components/FindPublic.jsx'
+import FeedPublic from './components/FeedPublic.jsx'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('login');
