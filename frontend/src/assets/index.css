@@ -9,7 +9,6 @@ body {
   padding: 0;
 }
 
-/* Supprime les styles Vite par défaut */
 #root {
   width: 100%;
   max-width: 1280px;
@@ -99,3 +98,27 @@ body {
 .titre {
   color: #C45A3B;
 }
+
+/* ================== RADIUS ================== */
+
+/* ===== for blocs ===== */
+
+.app-block {
+  border-radius: 16px !important;
+}
+
+/* for images */
+.post-block {
+  overflow: hidden;
+}
+
+.post-image {
+  border-radius: 0 !important; /* l'image suit le card, pas besoin d'arrondir elle-même */
+  display: block;
+}
+
+/* for menu */
+.menu-block {
+  overflow: hidden;
+}
+
