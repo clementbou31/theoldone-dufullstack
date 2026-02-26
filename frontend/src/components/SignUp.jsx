@@ -35,7 +35,16 @@ function SignUp() {
   }
 
   return (
-    <div>
+    <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >      
       <h1>the old one</h1>
       <Box component="form" onSubmit={handleSubmit}>
         <Card sx={{ 
@@ -81,7 +90,7 @@ function SignUp() {
           </CardActions>
         </Card>
       </Box>
-    </div>
+    </Box>
   )
 }
 
