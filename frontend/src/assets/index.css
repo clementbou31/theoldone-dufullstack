@@ -6,7 +6,7 @@ body {
   color: #45413C;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.6;
-  padding: 30px 15px;
+  padding: 0;
 }
 
 /* Supprime les styles Vite par défaut */

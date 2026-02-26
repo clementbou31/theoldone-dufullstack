@@ -20,43 +20,91 @@ import {
   red,
 } from "../assets/mui";
 
+const originPost = [
+  {
+    id: 1,
+    author: "Eddy Malou",
+    date: "February 24, 2026",
+    text: "La congolexicomatisation des lois du marché.",
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxAPnjjYw7fRQ2SYiBpK5yV6dAnbnXdqdHZg&s",
+  },
+];
 
-// ======================================
-// Main component: FeedPublic
-// ======================================
+const API_BASE_URL = "http://127.0.0.1:8000/api";
+
+function mapApiPostToUi(post) {
+  return {
+    id: post.id,
+    author: post.author_name ?? "Utilisateur",
+    date: post.created_at ? new Date(post.created_at).toLocaleDateString() : "",
+    text: post.text ?? "",
+    imageUrl: post.image_url ?? "",
+  };
+}
 
 export default function FeedPublic({ user }) {
-    const [open, setOpen] = React.useState(false);
-    const openCreateDialog = () => setOpen(true); 
-    const closeCreateDialog = () => setOpen(false);
-    const [posts, setPosts] = React.useState([
-    {
-      id: 1,
-      author: "Eddy Malou",
-      date: "February 24, 2026",
-      text: "La congolexicomatisation des lois du marché.",
-      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxAPnjjYw7fRQ2SYiBpK5yV6dAnbnXdqdHZg&s",
-    },
-    ]);
-    const createPublication = ({ text, imageUrl }) => {
-      const newPost = {
-        id: Date.now(),
-        author: user?.name ?? "Utilisateur",
-        date: new Date().toLocaleDateString(),
-        text,
-        imageUrl,
-      };
+  const [open, setOpen] = React.useState(false);
+  const openCreateDialog = () => setOpen(true);
+  const closeCreateDialog = () => setOpen(false);
 
-      setPosts((prev) => [newPost, ...prev]);
-    };
+  const [apiPosts, setApiPosts] = React.useState([]);
+  const [error, setError] = React.useState("");
+
+  React.useEffect(() => {
+    let mounted = true;
+
+    (async () => {
+      try {
+        setError("");
+        const res = await fetch(`${API_BASE_URL}/posts/`);
+        if (!res.ok) throw new Error("Impossible de charger les posts");
+        const data = await res.json(); // posts backend
+        const uiPosts = data.map(mapApiPostToUi);
+        if (mounted) setApiPosts(uiPosts);
+      } catch (e) {
+        if (mounted) setError(e.message ?? "Erreur");
+      }
+    })();
+
+    return () => { mounted = false; };
+  }, []);
+
+  const posts = [...apiPosts, ...originPost];
+
+  const createPublication = async ({ text, imageUrl }) => {
+    setError("");
+
+    const token = localStorage.getItem("access");
+    if (!token) {
+      setError("Pas de token : connecte-toi avant de publier.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/posts/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text, image_url: imageUrl }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error ?? "Impossible de publier");
+      }
+
+      const createdUi = mapApiPostToUi(data);
+      setApiPosts((prev) => [createdUi, ...prev]); // at the begining
+    } catch (e) {
+      setError(e.message ?? "Erreur lors de la publication");
+    }
+  };
 
   return (
-    <Container maxWidth="sm" sx={{ py: 4 }}> 
-
-          {/* <Avatar sx={{ bgcolor: red[500] }}>
-            {(user?.name?.[0] ?? "U").toUpperCase()}
-          </Avatar> */}
-
+    <Container maxWidth="sm" sx={{ py: 4 }}>
       <Card sx={{ width: 600, maxWidth: "100%", mx: "auto", mb: 3 }}>
         <CardContent>
           <div
@@ -75,9 +123,25 @@ export default function FeedPublic({ user }) {
         </CardContent>
       </Card>
 
+      {!!error && (
+        <Card sx={{ width: 600, maxWidth: "100%", mx: "auto", mb: 3 }}>
+          <CardContent>
+            <Typography variant="body2" sx={{ color: "error.main" }}>
+              {error}
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
+
       {posts.map((post) => (
         <Card key={post.id} sx={{ width: 600, maxWidth: "100%", mx: "auto", mb: 3 }}>
           <CardHeader
+            sx={{ 
+              textAlign: "left", 
+              "& .MuiCardHeader-content": { textAlign: "left" }, 
+              "& .MuiCardHeader-title": { textAlign: "left" }, 
+              "& .MuiCardHeader-subheader": { textAlign: "left" },
+            }}
             avatar={
               <Avatar sx={{ bgcolor: red[500] }}>
                 {post.author[0]}
@@ -97,7 +161,7 @@ export default function FeedPublic({ user }) {
 
           {post.text && (
             <CardContent>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              <Typography variant="body2" sx={{ color: "text.secondary", textAlign: "left" }}>
                 {post.text}
               </Typography>
             </CardContent>
@@ -109,21 +173,19 @@ export default function FeedPublic({ user }) {
             </IconButton>
           </CardActions>
         </Card>
-      ))}    
+      ))}
 
       <CreatePublicationDialog
-              open={open}
-              onClose={closeCreateDialog}
-              onCreate={(payload) => {
-                createPublication(payload);
-                closeCreateDialog();
-              }}
-            />
-
-</Container>
+        open={open}
+        onClose={closeCreateDialog}
+        onCreate={(payload) => {
+          createPublication(payload);
+          closeCreateDialog();
+        }}
+      />
+    </Container>
   );
 }
-
 
 // ======================================
 //   Component: CreatePublicationDialog
@@ -142,7 +204,6 @@ function CreatePublicationDialog({ open, onClose, onCreate }) {
     if (text === "" && imageUrl === "") return;
 
     onCreate({ text, imageUrl });
-
     event.currentTarget.reset();
   };
 
@@ -152,35 +213,19 @@ function CreatePublicationDialog({ open, onClose, onCreate }) {
 
       <DialogContent>
         <form id="post-form" onSubmit={handleSubmit}>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="text"
-            label="..."
-            fullWidth
-            multiline
-            minRows={3}
-          />
-
-          <TextField
-            margin="dense"
-            name="imageUrl"
-            label="Colle l'URL de ton image"
-            fullWidth
-          />
+          <TextField autoFocus margin="dense" name="text" label="..." fullWidth multiline minRows={3} />
+          <TextField margin="dense" name="imageUrl" label="Colle l'URL de ton image" fullWidth />
         </form>
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}  variant="outlined" sx={{ borderColor: "grey.400", color: "inherit",borderRadius: "14px" }} >
-            Annuler
+        <Button onClick={onClose} variant="outlined" sx={{ borderColor: "grey.400", color: "inherit", borderRadius: "14px" }}>
+          Annuler
         </Button>
-        <Button type="submit" form="post-form" variant="contained" sx={{ borderColor: "grey.400", backgroundColor: "#C45A3B", borderRadius: "14px" }} >
-            Publier
+        <Button type="submit" form="post-form" variant="contained" sx={{ borderColor: "grey.400", backgroundColor: "#C45A3B", borderRadius: "14px" }}>
+          Publier
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
-
-

@@ -20,20 +20,29 @@ export default function IconMenu() {
   return (
     <Paper sx={{ width: 320, maxWidth: '100%' }}>
       <MenuList>
-        <MenuItem sx={{ py: 2 }}>
-          <ListItemIcon>
-            <HomeIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Accueil</ListItemText>
-            <ArrowForwardIos
-            sx={{
-                marginLeft: "auto",
-                fontSize: 16,
-                color: "text.secondary",
-            }}
-            />        
-        </MenuItem>
-        <MenuItem sx={{ py: 2 }}>
+      <MenuItem sx={{ py: 2 }}>
+        <ListItemIcon>
+          <HomeIcon fontSize="small" />
+        </ListItemIcon>
+
+        <ListItemText
+          primary="Accueil"
+          slotProps={{
+            primary: {
+              sx: { textAlign: "left" }
+            }
+          }}
+        />
+
+        <ArrowForwardIos
+          sx={{
+            marginLeft: "auto",
+            fontSize: 16,
+            color: "text.secondary",
+          }}
+        />
+      </MenuItem>        
+      <MenuItem sx={{ py: 2 }}>
           <ListItemIcon>
             <AccountBoxIcon fontSize="small" />
           </ListItemIcon>
