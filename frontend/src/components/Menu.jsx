@@ -18,13 +18,13 @@ import {
 
 export default function IconMenu() {
   return (
-    <Paper sx={{ width: 320, maxWidth: '100%' }}>
+    <Paper className="app-block menu-block" sx={{ width: 320, maxWidth: '100%' , borderRadius: 3}}>
       <MenuList>
+
       <MenuItem sx={{ py: 2 }}>
         <ListItemIcon>
           <HomeIcon fontSize="small" />
         </ListItemIcon>
-
         <ListItemText
           primary="Accueil"
           slotProps={{
@@ -33,7 +33,6 @@ export default function IconMenu() {
             }
           }}
         />
-
         <ArrowForwardIos
           sx={{
             marginLeft: "auto",
@@ -41,12 +40,21 @@ export default function IconMenu() {
             color: "text.secondary",
           }}
         />
-      </MenuItem>        
+      </MenuItem>     
+
       <MenuItem sx={{ py: 2 }}>
           <ListItemIcon>
             <AccountBoxIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Profil</ListItemText>
+
+        <ListItemText
+          primary="Profil"
+          slotProps={{
+            primary: {
+              sx: { textAlign: "left" }
+            }
+          }}
+        />
             <ArrowForwardIos
             sx={{
                 marginLeft: "auto",
@@ -55,11 +63,19 @@ export default function IconMenu() {
             }}
             />        
         </MenuItem>
+
         <MenuItem sx={{ py: 2 }}>
           <ListItemIcon>
             <FavoriteIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Famille</ListItemText>
+        <ListItemText
+          primary="Famille"
+          slotProps={{
+            primary: {
+              sx: { textAlign: "left" }
+            }
+          }}
+        />
             <ArrowForwardIos
             sx={{
                 marginLeft: "auto",
@@ -68,11 +84,19 @@ export default function IconMenu() {
             }}
             />        
         </MenuItem>
+
         <MenuItem sx={{ py: 2 }}>
           <ListItemIcon>
             <EmailIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Messagerie</ListItemText>
+        <ListItemText
+          primary="Messagerie"
+          slotProps={{
+            primary: {
+              sx: { textAlign: "left" }
+            }
+          }}
+        />
             <ArrowForwardIos
             sx={{
                 marginLeft: "auto",
@@ -81,11 +105,19 @@ export default function IconMenu() {
             }}
             />        
         </MenuItem>
+
         <MenuItem sx={{ py: 2 }}>
           <ListItemIcon>
             <CelebrationIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Evènements</ListItemText>
+        <ListItemText
+          primary="Evènements"
+          slotProps={{
+            primary: {
+              sx: { textAlign: "left" }
+            }
+          }}
+        />
             <ArrowForwardIos
             sx={{
                 marginLeft: "auto",
@@ -94,11 +126,19 @@ export default function IconMenu() {
             }}
             />        
         </MenuItem>
+
         <MenuItem sx={{ py: 2 }}>
           <ListItemIcon>
             <SettingsIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Paramètres</ListItemText>
+        <ListItemText
+          primary="Paramètres"
+          slotProps={{
+            primary: {
+              sx: { textAlign: "left" }
+            }
+          }}
+        />
             <ArrowForwardIos
             sx={{
                 marginLeft: "auto",
@@ -107,6 +147,7 @@ export default function IconMenu() {
             }}
             />        
         </MenuItem>
+
       </MenuList>
     </Paper>
   );

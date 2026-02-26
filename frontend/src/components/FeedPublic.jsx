@@ -104,8 +104,8 @@ export default function FeedPublic({ user }) {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ py: 4 }}>
-      <Card sx={{ width: 600, maxWidth: "100%", mx: "auto", mb: 3 }}>
+    <Container maxWidth="sm" sx={{ py: 0 }}>
+      <Card className="app-block composer-block" sx={{ width: 600, maxWidth: "100%", mx: "auto", mb: 3, borderRadius: 3 }}>
         <CardContent>
           <div
             onClick={openCreateDialog}
@@ -134,7 +134,7 @@ export default function FeedPublic({ user }) {
       )}
 
       {posts.map((post) => (
-        <Card key={post.id} sx={{ width: 600, maxWidth: "100%", mx: "auto", mb: 3 }}>
+        <Card className="app-block post-block" key={post.id} sx={{ width: 600, maxWidth: "100%", mx: "auto", mb: 3 }}>
           <CardHeader
             sx={{ 
               textAlign: "left", 
@@ -152,10 +152,10 @@ export default function FeedPublic({ user }) {
           />
 
           {post.imageUrl && (
-            <CardMedia
+            <CardMedia className="post-image"
               component="img"
               image={post.imageUrl}
-              sx={{ width: "100%", height: "auto" }}
+              sx={{ width: "100%", height: "auto" , borderRadius: 2 }}
             />
           )}
 
