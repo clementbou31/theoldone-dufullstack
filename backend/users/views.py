@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import check_password
-from .models import CustomUsers
-from .serializers import UsersSerializers
+from .models import CustomUsers, Post
+from .serializers import UsersSerializers, PostSerializer
 
 @api_view(['POST'])
 def register(request):
@@ -82,3 +82,34 @@ def me(request):
         })
     except Exception as e:
         return Response({'error': 'Token invalide'}, status=401)
+
+
+
+@api_view(["GET", "POST"])
+@permission_classes([AllowAny]) 
+def posts(request):
+    if request.method == "GET":
+        qs = Post.objects.select_related("author").all()
+        return Response(PostSerializer(qs, many=True).data)
+
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    if not token:
+        return Response({"error": "Missing token"}, status=401)
+
+    try:
+        decoded = AccessToken(token)
+        user = CustomUsers.objects.get(id=decoded["user_id"])
+    except Exception:
+        return Response({"error": "Invalid token"}, status=401)
+
+    serializer = PostSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
+
+    post = Post.objects.create(
+        author=user,
+        text=serializer.validated_data.get("text", ""),
+        image_url=serializer.validated_data.get("image_url", ""),
+    )
+
+    return Response(PostSerializer(post).data, status=201)

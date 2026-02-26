@@ -21,5 +21,15 @@ class CustomUsers(AbstractBaseUser):
         return self.email
     
 
+class Post(models.Model):
+    author = models.ForeignKey(CustomUsers, on_delete=models.CASCADE, related_name="posts")
+    text = models.TextField(blank=True)
+    image_url = models.URLField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Post #{self.id} by {self.author_id}"
 

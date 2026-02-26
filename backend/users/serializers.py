@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUsers
+from .models import CustomUsers, Post
 from django.contrib.auth.hashers import make_password, check_password
 
 class UsersSerializers(serializers.ModelSerializer):
@@ -11,3 +11,11 @@ class UsersSerializers(serializers.ModelSerializer):
     def create(self, validate_data):
         validate_data['password'] = make_password(validate_data['password'])
         return super().create(validate_data)
+
+class PostSerializer(serializers.ModelSerializer):
+    author_name = serializers.CharField(source="author.name", read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ["id", "author", "author_name", "text", "image_url", "created_at"]
+        read_only_fields = ["id", "author", "author_name", "created_at"]
